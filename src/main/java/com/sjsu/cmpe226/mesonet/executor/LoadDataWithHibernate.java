@@ -34,7 +34,6 @@ public class LoadDataWithHibernate {
 	 */
 	public static void main(String[] args) {
 		//Bhargav update
-		// TODO Auto-generated method stub
 		// ReadFromFile readObj = new ReadFromFile();
 
 		// StringBuilder fileData =
