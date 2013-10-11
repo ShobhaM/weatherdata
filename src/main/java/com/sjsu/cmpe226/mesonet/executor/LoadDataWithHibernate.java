@@ -132,12 +132,9 @@ public class LoadDataWithHibernate {
 					+ fipstream.available());
 
 			int count = 0;
-
 			in = new DataInputStream(fipstream);
 			br = new BufferedReader(new InputStreamReader(in));
-
 			String strLine = null;
-
 			WeatherDataDao weatherDataDao = new WeatherDataDao();
 
 			while ((strLine = br.readLine()) != null) {
@@ -147,15 +144,9 @@ public class LoadDataWithHibernate {
 					continue;
 
 				HashMap<String, String> contentDataInfo = new HashMap<String, String>();
-				/*String[] lineArray = strLine.split(" ");
-				for(String s:lineArray){
-					System.out.println("String is:" + s);
-					
-					System.out
-						.println("length of the lineArray  " + lineArray.length);
-				}*/
+				
+				
 				Scanner sc = new Scanner(strLine);
-				//String[] lineArray = new String[16];
 				ArrayList<String> lineArray = new ArrayList<String>();
 				
 				while(sc.hasNext())
