@@ -87,6 +87,11 @@
 		<artifactId>javassist</artifactId>
 		<version>3.12.1.GA</version>
 	</dependency>
+	<dependency>
+         <groupId>hibernate</groupId>
+         <artifactId>shards</artifactId>
+         <version>3.0.0B2</version>
+    </dependency>
 	<!-- Hibernate library dependecy end -->
   </dependencies>
   <build>
