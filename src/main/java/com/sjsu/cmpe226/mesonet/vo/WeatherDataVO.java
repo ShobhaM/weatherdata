@@ -7,11 +7,11 @@ import java.util.Date;
  */
 public class WeatherDataVO {
     
-	private int id;
-    
-    private String STN;
+    //private String STN;
     
     private Date YYMMDDHHMM;
+	
+	private StationWeatherWithTime swtObj;
     
     private double MNET;
     
@@ -45,7 +45,7 @@ public class WeatherDataVO {
 
 	private Date INSERT_DATE;
 
-	public int getId() {
+	/*public int getId() {
 		return id;
 	}
 
@@ -59,7 +59,7 @@ public class WeatherDataVO {
 
 	public void setSTN(String sTN) {
 		STN = sTN;
-	}
+	}*/
 
 	public Date getYYMMDDHHMM() {
 		return YYMMDDHHMM;
@@ -68,9 +68,19 @@ public class WeatherDataVO {
 	public void setYYMMDDHHMM(Date yYMMDDHHMM) {
 		YYMMDDHHMM = yYMMDDHHMM;
 	}
+	
+	
 
 	public double getMNET() {
 		return MNET;
+	}
+
+	public StationWeatherWithTime getSwtObj() {
+		return swtObj;
+	}
+
+	public void setSwtObj(StationWeatherWithTime swtObj) {
+		this.swtObj = swtObj;
 	}
 
 	public void setMNET(double mNET) {

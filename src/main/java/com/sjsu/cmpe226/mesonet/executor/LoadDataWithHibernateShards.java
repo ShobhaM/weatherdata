@@ -35,9 +35,7 @@ public class LoadDataWithHibernateShards {
 		//obj.readFromFileMethod("/Users/shobha/desktop/226/data/mesowest_csv.tbl");
 
 		LoadDataWithHibernateShards obj2 = new LoadDataWithHibernateShards();
-		//obj2.readFromOutDataFileMethod("/Users/shobha/workspace-226Proj1/Data/mesowest.out.20130926T1315");
-		//obj2.readFromOutDataFileMethod("/Users/shobha/workspace-226Proj1/Data/mesowest.out.20130930T1215");
-		obj2.readFromOutDataFileMethod("/Users/shobha/workspace-226Proj1/Data/mesowest.out.20131001T1200");
+		obj2.readFromOutDataFileMethod("/Users/bhargav_sjsu/Documents/weather_data/wd_data/mesowest.out.20130830T2000");
 	}
 
 	/**

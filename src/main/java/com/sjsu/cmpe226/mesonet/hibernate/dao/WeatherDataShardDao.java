@@ -32,8 +32,8 @@ public class WeatherDataShardDao {
     	 try{
          transaction = session.beginTransaction();
          WeatherDataVO metaOutDataObj = new WeatherDataVO();
-         metaOutDataObj.setId(counter);
-         metaOutDataObj.setSTN(contentInfo.get("STN"));
+//         metaOutDataObj.setId(counter);
+//         metaOutDataObj.setSTN(contentInfo.get("STN"));
          
          SimpleDateFormat df = new SimpleDateFormat("yyyyMMdd/hhmm");
          Date dt = null;

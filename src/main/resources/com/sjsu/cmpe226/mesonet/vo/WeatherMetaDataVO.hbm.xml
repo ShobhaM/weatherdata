@@ -4,12 +4,9 @@
 
 <hibernate-mapping>
     <class name="com.sjsu.cmpe226.mesonet.vo.WeatherMetaDataVO" table="wd_weather_station_metadata" catalog="weatherdata_schema">
-         <id name="id" type="java.lang.Integer">
-            <column name="id" not-null="false"/>
-        </id>
-        <property name="primary_id" type="string">
+        <id name="primary_id" type="string">
             <column name="primary_id" length="80" not-null="false"/>
-        </property>       
+        </id>       
         <property name="secondary_id" type="string">
             <column name="secondary_id" length="80" not-null="false"/>
         </property>

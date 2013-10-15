@@ -1,6 +1,3 @@
-/**
- * 
- */
 package com.sjsu.cmpe226.mesonet.executor;
 
 import java.io.BufferedReader;
@@ -10,44 +7,53 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Scanner;
 import java.util.logging.Logger;
 
-import com.sjsu.cmpe226.mesonet.hibernate.dao.*;
-import com.sjsu.cmpe226.mesonet.util.ReadFromFile;
+
+import com.sjsu.cmpe226.mesonet.jdbc.dao.WeatherDataJDBCDao;
+import com.sjsu.cmpe226.mesonet.jdbc.dao.WeatherMetaDataJDBCDao;
 
 /**
- * @author bhargav_sjsu
- * 
+ * This class is used to load data from the data files onto the database.
+ * The methods would call the DAO class written using Java-JDBC to perform
+ * transaction.
+ * @author krish
+ *
  */
-public class LoadDataWithHibernate {
+public class LoadDataWithJDBC {
 
-	private static Logger logger = Logger.getLogger(LoadDataWithHibernate.class
+	private static Logger logger = Logger.getLogger(LoadDataWithJDBC.class
 			.getName());
-	private StringBuilder data = null;
+	//private StringBuilder data = null;
 	private DataInputStream in = null;
 	private BufferedReader br = null;
-
+	
+	/**
+	 * The public empty constructor.
+	 */
+	public LoadDataWithJDBC(){
+		
+	}
+	
 	/**
 	 * @param args
 	 */
 	public static void main(String[] args) {
 		
-//		LoadDataWithHibernate obj = new LoadDataWithHibernate();
-//		obj.readFromFileMethod("/Users/bhargav_sjsu/Documents/weather_data/wd_data/mesowest.out.20130830T2015");
+		//LoadDataWithJDBC obj = new LoadDataWithJDBC();
+		//obj.readAndLoadMetaFromFileMethod("/home/krish/Documents/CMPE226/Project1/updateTrial.tbl");
 
-		LoadDataWithHibernate obj2 = new LoadDataWithHibernate();
-		obj2.readFromOutDataFileMethod("/Users/bhargav_sjsu/Documents/weather_data/wd_data/mesowest.out.20130830T2015");
+		LoadDataWithJDBC obj = new LoadDataWithJDBC();
+		obj.readAndLoadWeatherDataFromFileMethod("/home/krish/Downloads/mesowest.out.20130904T1000");
 
 	}
-
+	
 	/**
-	 * Method used to read data from file
-	 * 
-	 * @param data
+	 * Method to real meta data file and load into hash map for further processing.
+	 * @param fileName
 	 */
-	public StringBuilder readFromFileMethod(String fileName) {
+	public void readAndLoadMetaFromFileMethod(String fileName){
 		try {
 			// Initialize the file input stream
 			FileInputStream fstream = new FileInputStream(fileName);
@@ -56,7 +62,7 @@ public class LoadDataWithHibernate {
 			in = new DataInputStream(fstream);
 			br = new BufferedReader(new InputStreamReader(in));
 			String strLine = null;
-			WeatherMetaDataDao weatherMetaDao = new WeatherMetaDataDao();
+			WeatherMetaDataJDBCDao weatherMetaDao = new WeatherMetaDataJDBCDao();
 
 			// Read File Line By Line
 			while ((strLine = br.readLine()) != null) {
@@ -92,7 +98,7 @@ public class LoadDataWithHibernate {
 				//Added code line to avoid records with Lat and Lon as null or blank --Krish
 				if(metaInfo.get("latitude") != null || metaInfo.get("longitude") != null || 
 						(!metaInfo.get("latitude").equals("")) || (!metaInfo.get("longitude").equals(""))){
-					weatherMetaDao.saveDataHeader(metaInfo, count);
+					weatherMetaDao.saveMetaDataToDB(metaInfo);
 				}
 			}
 
@@ -118,17 +124,14 @@ public class LoadDataWithHibernate {
 				}
 			}
 		}
-		// System.out.println("I am the one who is throwing " + data);
-		return data;
 	}
-
+	
 	/**
-	 * Method for reading out data from the weather data document.
-	 * @param filename
+	 * This method is to read weather data from the file and load to the data base.
 	 */
-	public void readFromOutDataFileMethod(String filename) {
+	public synchronized void readAndLoadWeatherDataFromFileMethod(String fileName){
 		try {
-			FileInputStream fipstream = new FileInputStream(filename);
+			FileInputStream fipstream = new FileInputStream(fileName);
 			System.out.println("Total size of the file to read "
 					+ fipstream.available());
 
@@ -139,7 +142,7 @@ public class LoadDataWithHibernate {
 
 			String strLine = null;
 
-			WeatherDataDao weatherDataDao = new WeatherDataDao();
+			WeatherDataJDBCDao weatherDataDao = new WeatherDataJDBCDao();
 
 			while ((strLine = br.readLine()) != null) {
 				count++;
@@ -190,8 +193,9 @@ public class LoadDataWithHibernate {
 				//Added code line to avoid records with Lat and Lon as null or blank --Krish
 				if(contentDataInfo.get("SLAT") != null || contentDataInfo.get("SLON") != null || 
 						(!contentDataInfo.get("SLAT").equals("")) || (!contentDataInfo.get("SLON").equals(""))){
-					weatherDataDao.saveDataContent(contentDataInfo, count);
+					weatherDataDao.saveWeatherDataToDB(contentDataInfo);
 				}
+				sc.close();
 			}
 
 			in.close();
@@ -216,5 +220,4 @@ public class LoadDataWithHibernate {
 			}
 		}
 	}
-
 }
