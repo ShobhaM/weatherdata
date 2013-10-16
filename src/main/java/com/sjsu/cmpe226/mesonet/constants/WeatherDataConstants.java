@@ -26,8 +26,11 @@ public class WeatherDataConstants {
     public static String INSERT_WAETHERDATA_QUERY = "INSERT INTO weatherdata_schema.wd_weather_data (STN, CREATE_TIME, MNET, SLAT, SLON, "
     		+ "SELV, TMPF, SKNT, DRCT, GUST, PMSL, ALTI, DWPF, RELH, WTHR, P24I, LAST_UPDATE_DATE, INSERT_DATE) "
     		+ "VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
-    public static String UPDATE_WEATHERDATA_QUERY = "UPDATE weatherdata_schema.wd_weather_data SET MNET = ?, SLAT = ?, SLAN = ?, SELV = ?,"
+    public static String UPDATE_WEATHERDATA_QUERY = "UPDATE weatherdata_schema.wd_weather_data SET MNET = ?, SLAT = ?, SLON = ?, SELV = ?,"
     		+ "TMPF = ?, SKNT = ?, DRCT = ?, GUST = ?, PMSL = ?, ALTI = ?, DWPF = ?, RELH = ?, WTHR = ?, P24I = ?, LAST_UPDATE_DATE = ? "
     		+ "WHERE STN = ? and CREATE_TIME = ?";
+    
+    public static String SELECT_AVGTEMP_FORSTN_WITHDATERANGE = "Select avg(tmpf), stn from weatherdata_schema.wd_weather_data where "
+    		+ "create_time >= ? and create_time <= ? group by stn";
 
 }
