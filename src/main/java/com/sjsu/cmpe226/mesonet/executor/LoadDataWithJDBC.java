@@ -2,17 +2,19 @@ package com.sjsu.cmpe226.mesonet.executor;
 
 import java.io.BufferedReader;
 import java.io.DataInputStream;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Scanner;
 import java.util.logging.Logger;
 
-
 import com.sjsu.cmpe226.mesonet.jdbc.dao.WeatherDataJDBCDao;
 import com.sjsu.cmpe226.mesonet.jdbc.dao.WeatherMetaDataJDBCDao;
+import com.sjsu.cmpe226.mesonet.util.WriteToFile;
 
 /**
  * This class is used to load data from the data files onto the database.
@@ -187,7 +189,7 @@ public class LoadDataWithJDBC {
 					contentDataInfo.put("WTHR", lineArray.get(14));
 					contentDataInfo.put("P24I", lineArray.get(15));
 				}
-				System.out.println("completed forming hashmap successfully");
+				//System.out.println("completed forming hashmap successfully");
 				
 				
 				//Added code line to avoid records with Lat and Lon as null or blank --Krish
@@ -219,5 +221,53 @@ public class LoadDataWithJDBC {
 				}
 			}
 		}
+	}
+	
+	/**
+	 * The method is used while testing to load large number of records for either weatherData or metaData.
+	 * @param filePath
+	 * @param dataType
+	 * @return
+	 */
+	public boolean loadDataFiles(String filePath, String dataType) {
+		File folder = new File(filePath);
+		LoadDataWithJDBC obj2 = new LoadDataWithJDBC();
+		String filename = "";
+		File[] listOfFiles = folder.listFiles();
+
+		try {
+
+			for (int i = 0; i < listOfFiles.length; i++) {
+				if (listOfFiles[i].isFile() && listOfFiles[i].getName().toString() != ".DS_Store") {
+					filename = listOfFiles[i].getName();
+					Date date = new Date();
+					
+					//Start Time
+					WriteToFile.appendToFileMethod(date.toString(), "/Users/bhargav_sjsu/Documents/logLoadTime.txt");
+					
+					if(dataType.equals("weatherData"))
+						obj2.readAndLoadWeatherDataFromFileMethod(filePath+filename);
+					else
+						obj2.readAndLoadMetaFromFileMethod(filePath+filename);
+
+					//End Time
+					WriteToFile.appendToFileMethod(date.toString(), "/Users/bhargav_sjsu/Documents/logLoadTime.txt");
+					
+					File movefile = new File(filePath+filename);
+					if (movefile.renameTo(new File(filePath + "archive/"
+							+ movefile.getName()))) {
+						System.out.println("File is moved successful!");
+					} else {
+						System.out.println("File is failed to move!");
+					}
+
+				}
+			}
+		} catch (Exception e) {
+			System.out.println("File was not processed" + filename);
+			e.printStackTrace();
+		}
+
+		return true;
 	}
 }
