@@ -243,7 +243,7 @@ public class LoadDataWithJDBC {
 					Date date = new Date();
 					
 					//Start Time
-					WriteToFile.appendToFileMethod(date.toString(), "/Users/bhargav_sjsu/Documents/logLoadTime.txt");
+					WriteToFile.appendToFileMethod(date.toString(), "/home/krish/Downloads/logLoadTime.txt");
 					
 					if(dataType.equals("weatherData"))
 						obj2.readAndLoadWeatherDataFromFileMethod(filePath+filename);
@@ -251,7 +251,7 @@ public class LoadDataWithJDBC {
 						obj2.readAndLoadMetaFromFileMethod(filePath+filename);
 
 					//End Time
-					WriteToFile.appendToFileMethod(date.toString(), "/Users/bhargav_sjsu/Documents/logLoadTime.txt");
+					WriteToFile.appendToFileMethod(date.toString(), "/home/krish/Downloads/logLoadTime.txt");
 					
 					File movefile = new File(filePath+filename);
 					if (movefile.renameTo(new File(filePath + "archive/"
