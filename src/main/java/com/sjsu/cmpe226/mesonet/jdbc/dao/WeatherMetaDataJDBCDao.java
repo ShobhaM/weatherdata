@@ -34,7 +34,7 @@ public class WeatherMetaDataJDBCDao {
 	public synchronized void saveMetaDataToDB(HashMap<String,String> metaInfo){
 		PreparedStatement pstmt = null;
 		
-		System.out.println("Inside the WeatherMetaDataJDBCDao.saveMetaDataToDB() method...");
+		//System.out.println("Inside the WeatherMetaDataJDBCDao.saveMetaDataToDB() method...");
 		try{
 			if(conn == null || conn.isClosed()){
 				conn = DBConnectionMgr.getConnection();
@@ -74,7 +74,7 @@ public class WeatherMetaDataJDBCDao {
 			se.printStackTrace();
 			try{
 				if(conn != null){
-					System.out.println("Rolling back the transaction.");
+					//System.out.println("Rolling back the transaction.");
 					conn.rollback();
 					if(se.getMessage().toLowerCase().contains("duplicate key value")){
 						updateIfDuplicateRecordFound(metaInfo, conn);
@@ -97,7 +97,7 @@ public class WeatherMetaDataJDBCDao {
 			}
 		}
 		
-		System.out.println("Exiting the WeatherMetaDataJDBCDao.saveMetaDataToDB() method...");
+		//System.out.println("Exiting the WeatherMetaDataJDBCDao.saveMetaDataToDB() method...");
 	}
 	
 	/**
@@ -107,7 +107,7 @@ public class WeatherMetaDataJDBCDao {
 		throws SQLException{
 		PreparedStatement pstmt = null;
 		
-		System.out.println("Inside the WeatherMetaDataJDBCDao.updateIfDuplicateRecordFound() method...");
+		//System.out.println("Inside the WeatherMetaDataJDBCDao.updateIfDuplicateRecordFound() method...");
 		
 		if(conn != null){
 			pstmt = conn.prepareStatement(WeatherDataConstants.UPDATE_METADATA_QUERY);
@@ -124,8 +124,8 @@ public class WeatherMetaDataJDBCDao {
 		
 		//Execute the update.
 		int i = pstmt.executeUpdate();
-		if (i > 0)
-			System.out.println("The record with primary_id : "+metaInfo.get("primary_id")+" got updated.");
+		//if (i > 0)
+			//System.out.println("The record with primary_id : "+metaInfo.get("primary_id")+" got updated.");
 		
 		conn.commit();
 	}
