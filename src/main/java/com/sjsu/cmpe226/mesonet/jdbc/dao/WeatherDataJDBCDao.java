@@ -30,7 +30,7 @@ public class WeatherDataJDBCDao {
 	public synchronized void saveWeatherDataToDB(HashMap<String,String> contentDataInfo){
 		PreparedStatement pstmt = null;
 		
-		System.out.println("Inside the WeatherDataJDBCDao.saveWeatherDataToDB() method...");
+		//System.out.println("Inside the WeatherDataJDBCDao.saveWeatherDataToDB() method...");
 		try{
 			if(conn == null || conn.isClosed()){
 				conn = DBConnectionMgr.getConnection();
@@ -76,11 +76,11 @@ public class WeatherDataJDBCDao {
 			//Commit the transaction.
 			conn.commit();
 		}catch(SQLException se){
-			System.out.println("I am here ONE");
+			//System.out.println("I am here ONE");
 			se.printStackTrace();
 			try{
 				if(conn != null){
-					System.out.println("Rolling back the transaction.");
+					//System.out.println("Rolling back the transaction.");
 					conn.rollback();
 					if(se.getMessage().toLowerCase().contains("duplicate key value")){
 						updateIfDuplicateRecordFound(contentDataInfo, conn);
@@ -90,7 +90,7 @@ public class WeatherDataJDBCDao {
 				ex.printStackTrace();
 			}
 		}catch(Exception ex){
-			System.out.println("I am here TWO");
+			//System.out.println("I am here TWO");
 			ex.printStackTrace();
 		}finally{
 			try{
@@ -103,7 +103,7 @@ public class WeatherDataJDBCDao {
 			}
 		}
 		
-		System.out.println("Exiting the WeatherDataJDBCDao.saveWeatherDataToDB() method...");
+		//System.out.println("Exiting the WeatherDataJDBCDao.saveWeatherDataToDB() method...");
 	}
 	
 	/**
@@ -113,7 +113,7 @@ public class WeatherDataJDBCDao {
 		throws SQLException{
 		PreparedStatement pstmt = null;
 		
-		System.out.println("Inside the WeatherDataJDBCDao.updateIfDuplicateRecordFound() method...");
+		//System.out.println("Inside the WeatherDataJDBCDao.updateIfDuplicateRecordFound() method...");
 		
 		if(conn != null){
 			pstmt = conn.prepareStatement(WeatherDataConstants.UPDATE_WEATHERDATA_QUERY);
@@ -152,11 +152,11 @@ public class WeatherDataJDBCDao {
         
 		//Execute the update.
 		int i = pstmt.executeUpdate();
-		if (i > 0)
+		/*if (i > 0)
 			System.out.println("The record with STN : "+contentDataInfo.get("STN")+" and "
-					+ "CURRENT_TIME : "+contentDataInfo.get("YYMMDD/HHMM")+" got updated.");
+					+ "CURRENT_TIME : "+contentDataInfo.get("YYMMDD/HHMM")+" got updated.");*/
 		
 		conn.commit();
-		System.out.println("Exiting the WeatherDataJDBCDao.updateIfDuplicateRecordFound() method...");
+		//System.out.println("Exiting the WeatherDataJDBCDao.updateIfDuplicateRecordFound() method...");
 	}
 }
