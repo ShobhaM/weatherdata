@@ -3,6 +3,7 @@ package com.sjsu.cmpe226.mesonet.jdbc.dao;
 import java.sql.Connection;
 import java.sql.Date;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -158,5 +159,41 @@ public class WeatherDataJDBCDao {
 		
 		conn.commit();
 		//System.out.println("Exiting the WeatherDataJDBCDao.updateIfDuplicateRecordFound() method...");
+	}
+	
+	public synchronized void getAvgTempForStnsWithinTimeRange(Date fromDate, Date toDate){
+		PreparedStatement pstmt = null;
+		int avgTemp = 0;
+		String stn = "";
+		HashMap<Integer, String> hmResult = new HashMap<Integer, String>();
+		ResultSet rs = null;		
+		
+		try{
+			conn = DBConnectionMgr.getConnection();
+			if(conn != null && !conn.isClosed())
+				pstmt = conn.prepareStatement(WeatherDataConstants.SELECT_AVGTEMP_FORSTN_WITHDATERANGE);
+			
+			pstmt.setDate(1, fromDate);
+			pstmt.setDate(2, toDate);
+			
+			rs = pstmt.executeQuery();
+			
+			if(rs != null){
+				while(rs.next()){
+					avgTemp = rs.getInt(1);
+					stn = rs.getString(2);
+					
+					hmResult.put(avgTemp, stn);
+				}
+			}
+			
+			if(hmResult.size() > 0)
+				System.out.println("The content in HashMap :"+hmResult.size());
+			
+		}catch(SQLException ex){
+			ex.printStackTrace();
+		}catch(Exception ex){
+			ex.printStackTrace();
+		}
 	}
 }
