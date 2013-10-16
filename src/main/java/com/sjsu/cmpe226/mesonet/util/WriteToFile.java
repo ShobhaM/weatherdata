@@ -11,8 +11,8 @@ import java.util.logging.Logger;
  */
 public class WriteToFile {
 
-    private Logger logger = Logger.getLogger(WriteToFile.class.getName());
-    private BufferedWriter out = null;
+    private static Logger logger = Logger.getLogger(WriteToFile.class.getName());
+    private static BufferedWriter out = null;
     
     /**
      * Method used to write data to file
@@ -44,7 +44,7 @@ public class WriteToFile {
      * Method used to append data to file
      * @param data
      */
-    public synchronized boolean appendToFileMethod(StringBuilder data,String fileName){
+    public static synchronized boolean appendToFileMethod(String data,String fileName){
         boolean flag = false;
         
         try{

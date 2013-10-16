@@ -3,15 +3,15 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>weatherdata</groupId>
   <artifactId>weatherdata</artifactId>
-  <packaging>war</packaging>
+  <packaging>jar</packaging>
   <version>0.0.1-SNAPSHOT</version>
   <name>weatherdata Maven Webapp</name>
   <url>http://maven.apache.org</url>
   <dependencies>
-    <dependency>
+	<dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
-      <version>3.8.1</version>
+      <version>4.8.1</version>
       <scope>test</scope>
     </dependency>
     
@@ -87,13 +87,15 @@
 		<artifactId>javassist</artifactId>
 		<version>3.12.1.GA</version>
 	</dependency>
-	<dependency>
-         <groupId>hibernate</groupId>
-         <artifactId>shards</artifactId>
-         <version>3.0.0B2</version>
-    </dependency>
 	<!-- Hibernate library dependecy end -->
+	<dependency>
+   		<groupId>javax.persistence</groupId>
+   		<artifactId>persistence-api</artifactId>
+   		<version>1.0.2</version>
+   		<scope>provided</scope>
+	</dependency>
   </dependencies>
+  
   <build>
     <finalName>weatherdata</finalName>
   </build>

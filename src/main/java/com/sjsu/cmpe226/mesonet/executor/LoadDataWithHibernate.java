@@ -5,10 +5,12 @@ package com.sjsu.cmpe226.mesonet.executor;
 
 import java.io.BufferedReader;
 import java.io.DataInputStream;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Scanner;
@@ -16,6 +18,7 @@ import java.util.logging.Logger;
 
 import com.sjsu.cmpe226.mesonet.hibernate.dao.*;
 import com.sjsu.cmpe226.mesonet.util.ReadFromFile;
+import com.sjsu.cmpe226.mesonet.util.WriteToFile;
 
 /**
  * @author bhargav_sjsu
@@ -33,13 +36,55 @@ public class LoadDataWithHibernate {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		
-//		LoadDataWithHibernate obj = new LoadDataWithHibernate();
-//		obj.readFromFileMethod("/Users/bhargav_sjsu/Documents/weather_data/wd_data/mesowest.out.20130830T2015");
+
+		// LoadDataWithHibernate obj = new LoadDataWithHibernate();
+		// obj.readFromFileMethod("/Users/bhargav_sjsu/Documents/weather_data/wd_data/mesowest.out.20130830T2015");
 
 		LoadDataWithHibernate obj2 = new LoadDataWithHibernate();
 		obj2.readFromOutDataFileMethod("/Users/bhargav_sjsu/Documents/weather_data/wd_data/mesowest.out.20130830T2015");
 
+	}
+
+	public boolean loadDataFiles(String filePath, String dataType) {
+		File folder = new File(filePath);
+		LoadDataWithHibernate obj2 = new LoadDataWithHibernate();
+		String filename = "";
+		File[] listOfFiles = folder.listFiles();
+
+		try {
+
+			for (int i = 0; i < listOfFiles.length; i++) {
+				if (listOfFiles[i].isFile() && listOfFiles[i].getName().toString() != ".DS_Store") {
+					filename = listOfFiles[i].getName();
+					Date date = new Date();
+					
+					//Start Time
+					WriteToFile.appendToFileMethod(date.toString(), "/Users/bhargav_sjsu/Documents/logLoadTime.txt");
+					
+					if(dataType.equals("weatherData"))
+						obj2.readFromOutDataFileMethod(filePath+filename);
+					else
+						obj2.readFromFileMethod(filePath+filename);
+
+					//End Time
+					WriteToFile.appendToFileMethod(date.toString(), "/Users/bhargav_sjsu/Documents/logLoadTime.txt");
+					
+					File movefile = new File(filePath+filename);
+					if (movefile.renameTo(new File(filePath + "archive/"
+							+ movefile.getName()))) {
+						System.out.println("File is moved successful!");
+					} else {
+						System.out.println("File is failed to move!");
+					}
+
+				}
+			}
+		} catch (Exception e) {
+			System.out.println("File was not processed" + filename);
+			e.printStackTrace();
+		}
+
+		return true;
 	}
 
 	/**
@@ -88,10 +133,13 @@ public class LoadDataWithHibernate {
 					metaInfo.put("tertiary_provider", lineArray[16]);
 					metaInfo.put("wims_id", lineArray[17]);
 				}
-				
-				//Added code line to avoid records with Lat and Lon as null or blank --Krish
-				if(metaInfo.get("latitude") != null || metaInfo.get("longitude") != null || 
-						(!metaInfo.get("latitude").equals("")) || (!metaInfo.get("longitude").equals(""))){
+
+				// Added code line to avoid records with Lat and Lon as null or
+				// blank --Krish
+				if (metaInfo.get("latitude") != null
+						|| metaInfo.get("longitude") != null
+						|| (!metaInfo.get("latitude").equals(""))
+						|| (!metaInfo.get("longitude").equals(""))) {
 					weatherMetaDao.saveDataHeader(metaInfo, count);
 				}
 			}
@@ -124,6 +172,7 @@ public class LoadDataWithHibernate {
 
 	/**
 	 * Method for reading out data from the weather data document.
+	 * 
 	 * @param filename
 	 */
 	public void readFromOutDataFileMethod(String filename) {
@@ -148,23 +197,21 @@ public class LoadDataWithHibernate {
 					continue;
 
 				HashMap<String, String> contentDataInfo = new HashMap<String, String>();
-				/*String[] lineArray = strLine.split(" ");
-				for(String s:lineArray){
-					System.out.println("String is:" + s);
-					
-					System.out
-						.println("length of the lineArray  " + lineArray.length);
-				}*/
+				/*
+				 * String[] lineArray = strLine.split(" "); for(String
+				 * s:lineArray){ System.out.println("String is:" + s);
+				 * 
+				 * System.out .println("length of the lineArray  " +
+				 * lineArray.length); }
+				 */
 				Scanner sc = new Scanner(strLine);
-				//String[] lineArray = new String[16];
+				// String[] lineArray = new String[16];
 				ArrayList<String> lineArray = new ArrayList<String>();
-				
-				while(sc.hasNext())
-				{
+
+				while (sc.hasNext()) {
 					lineArray.add(sc.next());
 				}
-				
-				
+
 				System.out.println(lineArray.size());
 				if (lineArray.size() == 16) {
 					contentDataInfo.put("STN", lineArray.get(0));
@@ -185,11 +232,13 @@ public class LoadDataWithHibernate {
 					contentDataInfo.put("P24I", lineArray.get(15));
 				}
 				System.out.println("completed forming hashmap successfully");
-				
-				
-				//Added code line to avoid records with Lat and Lon as null or blank --Krish
-				if(contentDataInfo.get("SLAT") != null || contentDataInfo.get("SLON") != null || 
-						(!contentDataInfo.get("SLAT").equals("")) || (!contentDataInfo.get("SLON").equals(""))){
+
+				// Added code line to avoid records with Lat and Lon as null or
+				// blank --Krish
+				if (contentDataInfo.get("SLAT") != null
+						|| contentDataInfo.get("SLON") != null
+						|| (!contentDataInfo.get("SLAT").equals(""))
+						|| (!contentDataInfo.get("SLON").equals(""))) {
 					weatherDataDao.saveDataContent(contentDataInfo, count);
 				}
 			}
