@@ -27,7 +27,7 @@ public class WeatherDataDao {
     public synchronized void saveDataContent(HashMap<String,String> contentInfo, Integer counter) {
     	
     	//Session session = HibernateUtil.getDataSessionFactory().openSession();
-        System.out.println("inside saveDataContent");
+       // System.out.println("inside saveDataContent");
         StationWeatherWithTime swtObj = new StationWeatherWithTime();
         
         //Hibernate session creation.
@@ -76,15 +76,15 @@ public class WeatherDataDao {
         			txn.commit();
         		}            		
         	}catch(ConstraintViolationException ce){
-        		System.out.println("Stuck with this ConstraintViolationException exception...");
+        		//System.out.println("Stuck with this ConstraintViolationException exception...");
         		try{
         			if(txn != null){
-            			System.out.println("Rolling back the recent transaction...");
+            			//System.out.println("Rolling back the recent transaction...");
             			txn.rollback();            			
             			//Call the updateExistingWeatherRecord() method.
                     	updateExistingWeatherRecord(contentInfo, swtObj, session, txn);  
-                    	System.out.println("The WeatherData record with STN : "+swtObj.getSTN()+" and "
-                    			+ "CREATE_TIME : "+swtObj.getYYMMDDHHMM()+" has been updated.");
+                    	//System.out.println("The WeatherData record with STN : "+swtObj.getSTN()+" and "
+                    			//+ "CREATE_TIME : "+swtObj.getYYMMDDHHMM()+" has been updated.");
             		}
         		}catch(HibernateException he){
         			he.printStackTrace();

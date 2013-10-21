@@ -32,5 +32,33 @@ public class WeatherDataConstants {
     
     public static String SELECT_AVGTEMP_FORSTN_WITHDATERANGE = "Select avg(tmpf), stn from weatherdata_schema.wd_weather_data where "
     		+ "create_time >= ? and create_time <= ? group by stn";
+    
+    public static String SELECT_DEMO_QUERY1 = "select avg(tmpf),dm.week_of_year,dm.year from weatherdata.weatherdata_schema.wd_weather_data wd,"
+    		+ "weatherdata.weatherdata_schema.wd_weather_date_master dm where stn= ? "
+    		+ "and wd.create_time between ? and ? and dm.date_wid between ? and ? group by dm.week_of_year,dm.year";
+    
+    public static String GET_AVGTEMP_NORM1 = "Select avg(wd.tmpf), wd.stn "
+    		+ "from weatherdata_schema.wd_weather_data wd, weatherdata_schema.wd_weather_station_metadata md "
+    		+ "where md.latitude between 27.00000 and 88.00000 and md.primary_id = wd.stn "
+    		+ "group by wd.stn";
+    
+    public static String GET_AVGTEMP_NORM2 = "Select avg(wd.tmpf), wd.stn "
+    		+ "from weatherdata_schema.wd_weather_data wd, weatherdata_schema.wd_weather_station_metadata md "
+    		+ "where md.latitude between 27.00000 and 88.00000 and md.longitude between -131.00000 and -80.00000 and md.primary_id = wd.stn "
+    		+ "group by wd.stn";
+    
+    public static String GET_AVGTEMP_NORM3 = "Select avg(tmpf), stn "
+    		+ "from weatherdata_schema.wd_weather_data "
+    		+ "where slat between 27.00000 and 88.00000 "
+    		+ "group by stn";
+    
+    public static String GET_AVGTEMP_NORM4 = "Select avg(tmpf), stn from "
+    		+ "weatherdata_schema.wd_weather_data "
+    		+ "where slat between 27.00000 and 88.00000 and slon between -131.00000 and -80.00000 "
+    		+ "group by stn";
 
+    public static String GET_APPQUERY_DATEMASTER = "select avg(tmpf),dm.week_of_year,dm.year "
+    		+ "from weatherdata.weatherdata_schema.wd_weather_data wd, weatherdata.weatherdata_schema.wd_weather_date_master dm "
+    		+ "where stn='MU101' and dm.date_wid between '2008-01-01' and '2013-12-31'and dm.row_wid=wd.date_wid "
+    		+ "group by dm.week_of_year,dm.year";
 }

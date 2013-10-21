@@ -82,7 +82,7 @@ public class BatchWeatherDataDao {
         session.clear();
       } //Batch to DB; size = 10000
     } catch(Exception e){
-      System.out.println("Exception!");
+      //System.out.println("Exception!");
       return weatherDataObj.getSwtObj().toString();
 
     }

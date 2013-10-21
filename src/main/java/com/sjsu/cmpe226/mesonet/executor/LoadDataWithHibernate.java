@@ -9,6 +9,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -41,7 +42,7 @@ public class LoadDataWithHibernate {
 		// obj.readFromFileMethod("/Users/bhargav_sjsu/Documents/weather_data/wd_data/mesowest.out.20130830T2015");
 
 		LoadDataWithHibernate obj2 = new LoadDataWithHibernate();
-		obj2.readFromOutDataFileMethod("/Users/bhargav_sjsu/Documents/weather_data/wd_data/mesowest.out.20130830T2015");
+		obj2.readFromOutDataFileMethod("/home/krish/Downloads/mesowest.out.20130904T1000");
 
 	}
 
@@ -50,16 +51,18 @@ public class LoadDataWithHibernate {
 		LoadDataWithHibernate obj2 = new LoadDataWithHibernate();
 		String filename = "";
 		File[] listOfFiles = folder.listFiles();
+		int count = 0;
 
 		try {
 
 			for (int i = 0; i < listOfFiles.length; i++) {
 				if (listOfFiles[i].isFile() && listOfFiles[i].getName().toString() != ".DS_Store") {
 					filename = listOfFiles[i].getName();
-					Date date = new Date();
+					
+					count++;
 					
 					//Start Time
-					WriteToFile.appendToFileMethod(date.toString(), "/Users/bhargav_sjsu/Documents/logLoadTime.txt");
+					WriteToFile.appendToFileMethod(count+" :: "+ new Timestamp(System.currentTimeMillis())+" :: FileName : "+filename+" \n", "/home/krish/Documents/CMPE226/Project1/logLoadTime.txt");
 					
 					if(dataType.equals("weatherData"))
 						obj2.readFromOutDataFileMethod(filePath+filename);
@@ -67,7 +70,7 @@ public class LoadDataWithHibernate {
 						obj2.readFromFileMethod(filePath+filename);
 
 					//End Time
-					WriteToFile.appendToFileMethod(date.toString(), "/Users/bhargav_sjsu/Documents/logLoadTime.txt");
+					WriteToFile.appendToFileMethod(count+" :: "+ new Timestamp(System.currentTimeMillis())+" :: FileName : "+filename+" \n", "/home/krish/Documents/CMPE226/Project1/logLoadTime.txt");
 					
 					File movefile = new File(filePath+filename);
 					if (movefile.renameTo(new File(filePath + "archive/"
@@ -178,8 +181,8 @@ public class LoadDataWithHibernate {
 	public void readFromOutDataFileMethod(String filename) {
 		try {
 			FileInputStream fipstream = new FileInputStream(filename);
-			System.out.println("Total size of the file to read "
-					+ fipstream.available());
+			//System.out.println("Total size of the file to read "
+					//+ fipstream.available());
 
 			int count = 0;
 
@@ -231,7 +234,7 @@ public class LoadDataWithHibernate {
 					contentDataInfo.put("WTHR", lineArray.get(14));
 					contentDataInfo.put("P24I", lineArray.get(15));
 				}
-				System.out.println("completed forming hashmap successfully");
+				//System.out.println("completed forming hashmap successfully");
 
 				// Added code line to avoid records with Lat and Lon as null or
 				// blank --Krish

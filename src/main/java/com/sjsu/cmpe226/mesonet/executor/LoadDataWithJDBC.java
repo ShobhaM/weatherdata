@@ -6,6 +6,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -134,8 +135,8 @@ public class LoadDataWithJDBC {
 	public synchronized void readAndLoadWeatherDataFromFileMethod(String fileName){
 		try {
 			FileInputStream fipstream = new FileInputStream(fileName);
-			System.out.println("Total size of the file to read "
-					+ fipstream.available());
+			//System.out.println("Total size of the file to read "
+				//	+ fipstream.available());
 
 			int count = 0;
 
@@ -234,6 +235,7 @@ public class LoadDataWithJDBC {
 		LoadDataWithJDBC obj2 = new LoadDataWithJDBC();
 		String filename = "";
 		File[] listOfFiles = folder.listFiles();
+		int count = 0;
 
 		try {
 
@@ -241,9 +243,10 @@ public class LoadDataWithJDBC {
 				if (listOfFiles[i].isFile() && listOfFiles[i].getName().toString() != ".DS_Store") {
 					filename = listOfFiles[i].getName();
 					Date date = new Date();
+					count++;
 					
 					//Start Time
-					WriteToFile.appendToFileMethod(date.toString(), "/home/krish/Downloads/logLoadTime.txt");
+					WriteToFile.appendToFileMethod(count+" :: "+ new Timestamp(System.currentTimeMillis())+ " :: "+filename+ " \n", "/home/krish/Documents/CMPE226/Project1/logLoadTime.txt");
 					
 					if(dataType.equals("weatherData"))
 						obj2.readAndLoadWeatherDataFromFileMethod(filePath+filename);
@@ -251,7 +254,7 @@ public class LoadDataWithJDBC {
 						obj2.readAndLoadMetaFromFileMethod(filePath+filename);
 
 					//End Time
-					WriteToFile.appendToFileMethod(date.toString(), "/home/krish/Downloads/logLoadTime.txt");
+					WriteToFile.appendToFileMethod(count+" :: "+ new Timestamp(System.currentTimeMillis())+ " :: "+filename+ " \n", "/home/krish/Documents/CMPE226/Project1/logLoadTime.txt");
 					
 					File movefile = new File(filePath+filename);
 					if (movefile.renameTo(new File(filePath + "archive/"

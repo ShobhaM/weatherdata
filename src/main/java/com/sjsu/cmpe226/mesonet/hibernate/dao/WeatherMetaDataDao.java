@@ -53,13 +53,13 @@ public class WeatherMetaDataDao {
         			txn.commit();
         		}            		
         	}catch(ConstraintViolationException cx){
-        		System.out.println("Stuck with this ConstraintViolationException exception...");
+        		//System.out.println("Stuck with this ConstraintViolationException exception...");
         		try{
         			if(txn != null){
-        				System.out.println("Rolling back the recent transaction...");
+        				//System.out.println("Rolling back the recent transaction...");
         				//Call the updateExistingRecord() method.
                 		updateExistingRecord(metaInfo, session, txn);
-                		System.out.println("The MetaData record with primary_id : "+metaInfo.get("primary_id")+" has been updated.");
+                		//System.out.println("The MetaData record with primary_id : "+metaInfo.get("primary_id")+" has been updated.");
         			}
         		}catch(HibernateException he){
         			he.printStackTrace();

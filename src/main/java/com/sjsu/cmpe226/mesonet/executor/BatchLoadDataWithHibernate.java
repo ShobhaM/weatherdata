@@ -3,10 +3,12 @@ package com.sjsu.cmpe226.mesonet.executor;
 
 import java.io.BufferedReader;
 import java.io.DataInputStream;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.sql.BatchUpdateException;
+import java.sql.Timestamp;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -16,19 +18,19 @@ import java.util.logging.Logger;
 
 import org.hibernate.Session;
 import org.hibernate.Transaction;
-
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.hibernate.exception.ConstraintViolationException;
 
 import com.sjsu.cmpe226.mesonet.hibernate.dao.WeatherMetaDataDao;
-
 import com.sjsu.cmpe226.mesonet.util.HibernateUtil;
 import com.sjsu.cmpe226.mesonet.util.ReadFromFile;
+import com.sjsu.cmpe226.mesonet.util.WriteToFile;
 import com.sjsu.cmpe226.mesonet.vo.StationWeatherWithTime;
 import com.sjsu.cmpe226.mesonet.vo.WeatherDataVO;
 import com.sjsu.cmpe226.mesonet.vo.WeatherMetaDataVO;
 import com.sjsu.cmpe226.mesonet.hibernate.dao.*;
+
 import java.util.HashMap;
 
 
@@ -49,22 +51,23 @@ public class BatchLoadDataWithHibernate {
 
   public static void main(String[] args) throws InterruptedException {
     long startTime = System.currentTimeMillis();
-    String metaPath, weatherPath;
-    metaPath =args[0];
-    weatherPath =args[1];
+    String metaPath = "";
+    String weatherPath = "";
+   // metaPath =args[0];
+    //weatherPath =args[1];
 
-    //JM@: load meta data
+   /* //JM@: load meta data
     BatchLoadDataWithHibernate objLoader = new BatchLoadDataWithHibernate();
 
     // Read data from file and save to hashMap.
     HashMap<String,WeatherMetaDataVO> objsMap =null;
     try{
 
-      objsMap = objLoader.readFromFileMethod(metaPath);
-      /*("D:/CMPE226_weatherData/weather_data/wd_data/mesowest_csv.tbl");*/
+      objsMap = objLoader.readFromFileMethod("/home/krish/Documents/CMPE226/Project1/Test_MetaData/mesowest_csv.tbl.20130911T1800");
+      ("D:/CMPE226_weatherData/weather_data/wd_data/mesowest_csv.tbl");
 
     } catch(NullPointerException E){
-      System.out.println("Reached the end of this file for MetaData.");
+      //System.out.println("Reached the end of this file for MetaData.");
     }
 
     //JM@ Save meta data to database.
@@ -72,7 +75,7 @@ public class BatchLoadDataWithHibernate {
     objLoader.updateOrSaveMetaObj(objsMap);
     long endTime = System.currentTimeMillis();
     long timeGap= (endTime - startTime)/1000;
-    System.out.println("Total use time for meta data:"+timeGap+"(secs)"+ "Total records");
+    System.out.println("Total use time for meta data:"+timeGap+"(secs)"+ "Total records");*/
 
 
     //JM@: for weather data loading
@@ -82,10 +85,10 @@ public class BatchLoadDataWithHibernate {
     HashMap<String,WeatherDataVO> objsMapWeather =null;
     try{
       objsMapWeather = objWeatherLoader
-          .readFromOutDataFileMethod(weatherPath);
+          .readFromOutDataFileMethod("/home/krish/Documents/CMPE226/Project1/Test_Data/mesowest.out.20130911T1830");
 
-      /*("D:/CMPE226_weatherData/weather_data" +
-              "/wd_data/mesowest.out.20130903T1545.tbl");*/
+      //("D:/CMPE226_weatherData/weather_data" +
+        //      "/wd_data/mesowest.out.20130903T1545.tbl");
     } catch(NullPointerException E) {
       System.out.println("Reached the end of this file for WeatherData.");
     }
@@ -97,16 +100,108 @@ public class BatchLoadDataWithHibernate {
     System.out.println("Total use time for weather data:"+timeGapWeather+"(secs)"+ "Total records");
 
   }
+  
+  //@Krish: Auto method that would be called for every file records upload.
+  public void uploadMetaDataToDBBatch(String fileName) throws InterruptedException{
+	  BatchLoadDataWithHibernate objLoader = new BatchLoadDataWithHibernate();
+	  long startTime = System.currentTimeMillis();
+
+	    // Read data from file and save to hashMap.
+	    HashMap<String,WeatherMetaDataVO> objsMap =null;
+	    try{
+
+	      objsMap = objLoader.readFromFileMethod(fileName);
+	   //   ("D:/CMPE226_weatherData/weather_data/wd_data/mesowest_csv.tbl");
+
+	    } catch(NullPointerException E){
+	      //System.out.println("Reached the end of this file for MetaData.");
+	    }
+
+	    //JM@ Save meta data to database.
+
+	    objLoader.updateOrSaveMetaObj(objsMap);
+	    long endTime = System.currentTimeMillis();
+	    long timeGap= (endTime - startTime)/1000;
+	    System.out.println("Total use time for meta data:"+timeGap+"(secs)"+ "Total records");
+  }
+  
+  
+//@Krish: Auto method that would be called for every file records upload.
+  public void uploadWeatherDataToDBBatch(String fileName) throws InterruptedException{
+	  long startTimeWeather = System.currentTimeMillis();
+	    BatchLoadDataWithHibernate objWeatherLoader = new BatchLoadDataWithHibernate();
+	    HashMap<String,WeatherDataVO> objsMapWeather =null;
+	    try{
+	      objsMapWeather = objWeatherLoader
+	          .readFromOutDataFileMethod(fileName);
+
+	      //("D:/CMPE226_weatherData/weather_data" +
+	        //      "/wd_data/mesowest.out.20130903T1545.tbl");
+	    } catch(NullPointerException E) {
+	      System.out.println("Reached the end of this file for WeatherData.");
+	    }
+	    objWeatherLoader.updateOrSaveWeatherObj(objsMapWeather);
+
+
+	    long endTimeWeather = System.currentTimeMillis();
+	    long timeGapWeather = (endTimeWeather - startTimeWeather)/1000;
+	    System.out.println("Total use time for weather data:"+timeGapWeather+"(secs)"+ "Total records");
+  }
+  
+  //@Krish: Auto method that would be called for every file records upload.
+  public boolean loadDataFiles(String filePath, String dataType) {
+		File folder = new File(filePath);
+		BatchLoadDataWithHibernate obj2 = new BatchLoadDataWithHibernate();
+		String filename = "";
+		File[] listOfFiles = folder.listFiles();
+		int count = 0;
+
+		try {
+
+			for (int i = 0; i < listOfFiles.length; i++) {
+				if (listOfFiles[i].isFile() && listOfFiles[i].getName().toString() != ".DS_Store") {
+					filename = listOfFiles[i].getName();
+					
+					count++;
+					
+					//Start Time
+					WriteToFile.appendToFileMethod(count+" :: "+ new Timestamp(System.currentTimeMillis())+" :: FileName : "+filename+" \n", "/home/krish/Documents/CMPE226/Project1/logLoadTime.txt");
+					
+					if(dataType.equals("weatherData"))
+						obj2.uploadWeatherDataToDBBatch(filePath+filename);
+					else
+						obj2.uploadMetaDataToDBBatch(filePath+filename);
+
+					//End Time
+					WriteToFile.appendToFileMethod(count+" :: "+ new Timestamp(System.currentTimeMillis())+" :: FileName : "+filename+" \n", "/home/krish/Documents/CMPE226/Project1/logLoadTime.txt");
+					
+					File movefile = new File(filePath+filename);
+					if (movefile.renameTo(new File(filePath + "archive/"
+							+ movefile.getName()))) {
+						System.out.println("File is moved successful!");
+					} else {
+						System.out.println("File is failed to move!");
+					}
+
+				}
+			}
+		} catch (Exception e) {
+			System.out.println("File was not processed" + filename);
+			e.printStackTrace();
+		}
+
+		return true;
+	}
 
 
 
 
   public void updateOrSaveWeatherObj(HashMap<String, WeatherDataVO> objsMapWeather) throws InterruptedException{
-    System.out.println("begin txns for WeahterData ");
+   // System.out.println("begin txns for WeahterData ");
     Session session = HibernateUtil.getDataSessionFactory().openSession();
     session.beginTransaction();
     Transaction txn = session.getTransaction();
-    System.out.println("begin save process for WeahterData ");
+    //System.out.println("begin save process for WeahterData ");
     int objCount = 0;
     for(String keyId: objsMapWeather.keySet()){
 
@@ -126,7 +221,7 @@ public class BatchLoadDataWithHibernate {
       HibernateUtil.shutdownHeader();
     } catch (ConstraintViolationException  e){
       //txn.rollback();
-      System.out.println("----------ConstraintViolationException: will do duplicateHandler ------------");
+     // System.out.println("----------ConstraintViolationException: will do duplicateHandler ------------");
       //duplicateHandlerHQL(session,metaDataObj);
       HibernateUtil.shutdownHeader();
     }
@@ -137,7 +232,7 @@ public class BatchLoadDataWithHibernate {
 
   public void updateOrSaveMetaObj(HashMap<String, WeatherMetaDataVO> objsMap)
       throws InterruptedException{
-    System.out.println("begin txns for MetaData ");
+   // System.out.println("begin txns for MetaData ");
     Session session = HibernateUtil.getMetaSessionFactory().openSession();
     session.beginTransaction();
     Transaction txn = session.getTransaction();
@@ -159,7 +254,7 @@ public class BatchLoadDataWithHibernate {
       HibernateUtil.shutdownHeader();
     } catch (ConstraintViolationException  e){
       //txn.rollback();
-      System.out.println("----------ConstraintViolationException: will do duplicateHandler ------------");
+     // System.out.println("----------ConstraintViolationException: will do duplicateHandler ------------");
       //duplicateHandlerHQL(session,metaDataObj);
       HibernateUtil.shutdownHeader();
     }
@@ -215,7 +310,7 @@ public class BatchLoadDataWithHibernate {
 
         } else if ((pri_key == ""||pri_key == null)){
           //@Jing:Check primary_id in Weathermeta_data is blank or not
-          System.out.println( pri_key+ " is invalid.");
+          //System.out.println( pri_key+ " is invalid.");
           continue;
         }
 
@@ -258,8 +353,8 @@ public class BatchLoadDataWithHibernate {
     WeatherDataVO weatherObj;
     try {
       FileInputStream fipstream = new FileInputStream(filename);
-      System.out.println("Total size of the file to read "
-          + fipstream.available());
+     // System.out.println("Total size of the file to read "
+       //   + fipstream.available());
 
       int count = 0;
 
@@ -313,7 +408,7 @@ public class BatchLoadDataWithHibernate {
 
 
         } else {
-          System.out.println( lineArray.get(0)+" and  "+lineArray.get(1)+ " is invalid.");
+          //System.out.println( lineArray.get(0)+" and  "+lineArray.get(1)+ " is invalid.");
           continue;
         }
 
